@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.1
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      KC_HEALTH_ENABLED: ${KC_HEALTH_ENABLED}
+      # Database configuration
+      KC_DB: ${KC_DB}
+      KC_DB_URL_HOST: ${KC_DB_URL_HOST}
+      KC_DB_PORT: ${KC_DB_PORT}
+      KC_DB_SCHEMA: ${KC_DB_SCHEMA}
+      KC_DB_URL_DATABASE: ${KC_DB_URL_DATABASE}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+    ports:
+      - "${KC_HTTP_PORT}:8080"
+      - "${KC_HTTP_MANAGEMENT_PORT}:9000"
+    depends_on:
+      - postgres
+volumes:
+  postgres-data:
