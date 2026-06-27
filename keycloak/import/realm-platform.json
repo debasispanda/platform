@@ -1,0 +1,100 @@
+{
+  "id": "platform-realm",
+  "realm": "platform",
+  "enabled": true,
+  "displayName": "Platform Realm",
+  "registrationAllowed": true,
+  "rememberMe": true,
+  "resetPasswordAllowed": true,
+  "clients": [
+    {
+      "clientId": "platform-web",
+      "name": "Platform Web",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "platform-web-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://platform.localhost/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "platform-admin",
+        "description": "Platform administrator"
+      },
+      {
+        "name": "platform-user",
+        "description": "Platform standard user"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Admin",
+      "email": "alice@platform.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Alice@123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "platform-admin"
+      ]
+    },
+    {
+      "username": "bob",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Bob",
+      "lastName": "Builder",
+      "email": "bob@platform.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Bob@123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "platform-user"
+      ]
+    },
+    {
+      "username": "charlie",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Charlie",
+      "lastName": "User",
+      "email": "charlie@platform.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Charlie@123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "platform-user"
+      ]
+    }
+  ]
+}

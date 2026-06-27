@@ -12,7 +12,7 @@ services:
       - ./postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
   keycloak:
     image: quay.io/keycloak/keycloak:26.6.1
-    command: start-dev
+    command: start-dev --import-realm
     labels:
       traefik.enable: "true"
       traefik.http.routers.keycloak.rule: Host(`keycloak.${DOMAIN_NAME}`)
@@ -33,6 +33,8 @@ services:
     # ports:
     #   - "${KC_HTTP_PORT_PUBLIC}:8080"
     #   - "${KC_HTTP_MANAGEMENT_PORT_PUBLIC}:9000"
+    volumes:
+      - ./keycloak/import:/opt/keycloak/data/import
     depends_on:
       - postgres
   traefik:

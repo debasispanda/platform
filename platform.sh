@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
 ENV_FILE="$SCRIPT_DIR/.env"
 COMPOSE_CMD=(docker compose -f "$COMPOSE_FILE")
-SERVICES=(postgres keycloak)
+SERVICES=(postgres keycloak traefik)
 
 usage() {
 	cat <<'EOF'
@@ -29,6 +29,7 @@ Options:
 Services:
 	postgres
 	keycloak
+	traefik
 EOF
 }
 
