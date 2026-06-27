@@ -9,10 +9,15 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
   keycloak:
     image: quay.io/keycloak/keycloak:26.6.1
     command: start-dev
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.keycloak.rule: Host(`keycloak.${DOMAIN_NAME}`)
+      traefik.http.routers.keycloak.entrypoints: web
+      traefik.http.services.keycloak.loadbalancer.server.port: "8080"
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
@@ -25,10 +30,22 @@ services:
       KC_DB_URL_DATABASE: ${KC_DB_URL_DATABASE}
       KC_DB_USERNAME: ${KC_DB_USERNAME}
       KC_DB_PASSWORD: ${KC_DB_PASSWORD}
-    ports:
-      - "${KC_HTTP_PORT}:8080"
-      - "${KC_HTTP_MANAGEMENT_PORT}:9000"
+    # ports:
+    #   - "${KC_HTTP_PORT_PUBLIC}:8080"
+    #   - "${KC_HTTP_MANAGEMENT_PORT_PUBLIC}:9000"
     depends_on:
       - postgres
+  traefik:
+    image: traefik:3.6
+    ports:
+      - "80:80"
+      - "${TRAEFIK_PORT}:8080"
+    environment:
+      TRAEFIK_API_INSECURE: ${TRAEFIK_API_INSECURE}
+      TRAEFIK_PROVIDERS_DOCKER: ${TRAEFIK_PROVIDERS_DOCKER}
+      TRAEFIK_LOG_LEVEL: ${TRAEFIK_LOG_LEVEL}
+      TRAEFIK_ENTRYPOINTS_web_ADDRESS: ${TRAEFIK_ENTRYPOINTS_web_ADDRESS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   postgres-data:
