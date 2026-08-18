@@ -1,9 +1,16 @@
 model_list:
   - model_name: engineering-summary
     litellm_params:
-      model: openrouter/openrouter/free
-      api_base: https://openrouter.ai/api/v1
-      api_key: os.environ/OPENROUTER_API_KEY
+      model: openai/gpt-4o-mini
+      api_key: os.environ/OPENAI_API_KEY
+  - model_name: engineering-summary-groq
+    litellm_params:
+      model: groq/llama-3.3-70b-versatile
+      api_key: os.environ/GROQ_API_KEY
+  - model_name: engineering-summary-gemini
+    litellm_params:
+      model: gemini/gemini-3.1-flash-lite
+      api_key: os.environ/GOOGLE_API_KEY
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
