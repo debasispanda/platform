@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15
+    image: ${POSTGRES_IMAGE}
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -11,7 +11,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/init-db.sql:/docker-entrypoint-initdb.d/init.sql
   keycloak:
-    image: quay.io/keycloak/keycloak:26.6.1
+    image: ${KEYCLOAK_IMAGE}
     command: start-dev --import-realm
     labels:
       traefik.enable: "true"
@@ -38,7 +38,7 @@ services:
     depends_on:
       - postgres
   traefik:
-    image: traefik:3.6
+    image: ${TRAEFIK_IMAGE}
     ports:
       - "80:80"
       - "${TRAEFIK_PORT}:8080"
@@ -49,5 +49,18 @@ services:
       TRAEFIK_ENTRYPOINTS_web_ADDRESS: ${TRAEFIK_ENTRYPOINTS_web_ADDRESS}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 volumes:
   postgres-data:
+  redis-data:
